@@ -6,7 +6,7 @@ networks:
 
 services:
 
-  postgres:
+  database:
     image: postgres:alpine
     environment:
       POSTGRES_PASSWORD: postgres
@@ -19,12 +19,17 @@ services:
     image: node:alpine
     command: yarn dev
     depends_on:
-      - postgres
+      - database
     volumes:
       - ./:/app
     working_dir: /app
     ports:
       - 8888:8888
       - 9229:9229
+    environment:
+      DB_HOST: database
+      DB_NAME: e-coleta
+      DB_USER: postgres
+      DB_PASSWORD: postgres
     networks: 
       - e_coleta_nw

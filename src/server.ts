@@ -1,13 +1,15 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
+
+import path from 'path'
+
+import { routes } from './routes'
 
 const app = express()
 
 app.use(express.json())
 
-app.get(
-  '/',
-  (_request: Request, response: Response): Response => {
-    return response.json({ message: 'Hello World' })
-  },
-)
-app.listen(3333, () => console.log('Sever On'))
+app.use(routes)
+
+app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')))
+
+app.listen(8888, () => console.log('Sever On'))
