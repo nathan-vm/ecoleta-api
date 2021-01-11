@@ -61,10 +61,20 @@ export class PointsController {
 
   async index(request: Request, response: Response) {
     const { city, uf, items } = request.query
-
-    const parsedItems = String(items)
+    const parsedItems: any = String(items)
       .split(',')
       .map(item => Number(item.trim()))
+
+    if (isNaN(parsedItems[0])) {
+      const points = await this.connection('points')
+        .join('point_items', 'points.id', '=', 'point_items.point_id')
+        .where('city', String(city))
+        .where('uf', String(uf))
+        .distinct()
+        .select('points.*')
+
+      return response.json(points)
+    }
 
     const points = await this.connection('points')
       .join('point_items', 'points.id', '=', 'point_items.point_id')
